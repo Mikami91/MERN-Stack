@@ -1,7 +1,10 @@
 // Dependencies
 import React, { Fragment, useState, useEffect } from "react";
-// Functions
-
+import axios from 'axios';
+// Components
+import Navbar from "./components/Navbar";
+import TaskAdd from "./components/TaskAdd";
+import TaskList from "./components/TaskList";
 
 function App() {
 
@@ -22,7 +25,7 @@ function App() {
         });
     };
 
-    const handleEmty = (e) => {
+    const handleEmty = () => {
         setState({
             ...state,
             _id: '',
@@ -32,9 +35,9 @@ function App() {
     };
 
     function fetchTasks() {
-        fetch('api/task')
-            .then(res => res.json())
-            .then(data => setState({ ...state, tasks: data }));
+        axios('api/task')
+            .then(res => setState({ ...state, tasks: res.data }))
+            .catch(err => console.log(err));
     }
 
     // CRUD
@@ -116,79 +119,11 @@ function App() {
 
     return (
         <Fragment>
-            <nav className="light-blue darken-4">
-                <div className="container">
-                    <a className="brand-logo" href="/">MERN Stack</a>
-                </div>
-            </nav>
-
+            <Navbar title="MERN Stack" />
             <div className="container">
                 <div className="row">
-                    <div className="col s5">
-                        <div className="card">
-                            <div className="card-content">
-                                <form onSubmit={state._id === '' ? addTask : updateTask}>
-                                    <div className="row">
-                                        <div className="input-field col s12">
-                                            <input
-                                                name="title"
-                                                type="text"
-                                                value={state.title}
-                                                placeholder="Task title"
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="input-field col s12">
-                                            <textarea
-                                                name="description"
-                                                value={state.description}
-                                                placeholder="Task description"
-                                                className="materialize-textarea"
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <button type="submit" className="btn light-blue darken-4">
-                                        {state._id === '' ? 'Add Task' : 'Update Task'}
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col s7">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    state.tasks.map(task => {
-                                        return (
-                                            <tr key={task._id}>
-                                                <td>{task.title}</td>
-                                                <td>{task.description}</td>
-                                                <td>
-                                                    <button onClick={() => deleteTask(task._id)} className="btn light-blue darken-4">
-                                                        <i className="material-icons">delete</i>
-                                                    </button>
-                                                    <button onClick={() => editTask(task._id)} className="btn light-blue darken-4" style={{ margin: '4px' }}>
-                                                        <i className="material-icons">edit</i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
+                    <TaskAdd state={state} handleChange={handleChange} addTask={addTask} updateTask={updateTask} />
+                    <TaskList state={state} editTask={editTask} deleteTask={deleteTask} />
                 </div>
             </div>
         </Fragment>
