@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
     await query.save();
     res.json({
         status: true,
-        massage: 'Task saved'
+        message: 'Task saved'
     });
 });
 
@@ -38,7 +38,7 @@ router.put("/:id", async (req, res) => {
     });
     res.json({
         status: true,
-        massage: 'Task updated'
+        message: 'Task updated'
     });
 });
 
@@ -46,7 +46,7 @@ router.delete("/:id", async (req, res) => {
     await Task.findByIdAndRemove(req.params.id);
     res.json({
         status: true,
-        massage: 'Task deleted'
+        message: 'Task deleted'
     });
 });
 
